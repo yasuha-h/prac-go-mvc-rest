@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"fmt"
+	"prac-go-mvc-rest/controllers/dto"
 	"prac-go-mvc-rest/models/repositories"
 )
 
@@ -23,7 +25,10 @@ func NewTodoController(tr repositories.TodoRepository) TodoController {
 }
 
 func (tc *todoController) GetTodo(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("get")
+	w.Header().Set("Content-type", "application/json")
+	todoResponse := dto.TodoResponse{Res: "GET"}
+	output, _ := json.MarshalIndent(todoResponse, "", "\t\t")
+	w.Write(output)
 }
 
 func (tc *todoController) PostTodo(w http.ResponseWriter, r *http.Request) {
