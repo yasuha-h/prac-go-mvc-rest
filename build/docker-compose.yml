@@ -1,7 +1,8 @@
 version: '3'
 services:
   app:
-    build: ./app
+    context: ./..
+    dockerfile: ./app/Dockerfile
     platform: 'linux/amd64'
     container_name: go_prac_app
     tty: true
