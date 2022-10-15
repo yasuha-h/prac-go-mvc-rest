@@ -3,6 +3,8 @@ package repositories
 import (
 	"database/sql"
 	"fmt"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var Db *sql.DB
@@ -10,7 +12,7 @@ var Db *sql.DB
 func init() {
 	var err error
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
-		"todo-appm", "todo-password", "go-prac:3306", "todo",
+		"goprac", "goprac", "localhost:3306", "go_prac",
 	)
 	Db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
