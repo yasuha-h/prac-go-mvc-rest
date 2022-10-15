@@ -1,6 +1,12 @@
 package repositories
 
+import (
+	"log"
+	"prac-go-mvc-rest/models/entities"
+)
+
 type TodoRepository interface {
+	GetTodo() (todos []entities.TodoEntity, err error)
 }
 
 type todoRepository struct {
@@ -8,4 +14,23 @@ type todoRepository struct {
 
 func NewTodoRepository() TodoRepository {
 	return &todoRepository{}
+}
+
+func (tr *todoRepository) GetTodo() (todos []entities.TodoEntity, err error) {
+	todos = []entities.TodoEntity{}
+	rows, err := Db.Query("SELECT id, title, content FROM todo ORDER BY id DESC")
+	if err != nil {
+		log.Print(err)
+	}
+
+	for rows.Next() {
+		todo := entities.TodoEntity{}
+		err = rows.Scan(&todo.Id, &todo.Title, &todo.Content)
+		if err != nil {
+			log.Print(err)
+		}
+		todos = append(todos, todo)
+	}
+
+	return
 }

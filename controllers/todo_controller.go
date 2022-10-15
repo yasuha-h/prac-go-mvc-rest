@@ -25,9 +25,22 @@ func NewTodoController(tr repositories.TodoRepository) TodoController {
 }
 
 func (tc *todoController) GetTodo(w http.ResponseWriter, r *http.Request) {
+	todos, err := tc.tr.GetTodo()
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	var todoResponses []dto.TodoResponse
+	for _, v := range todos {
+		todoResponses = append(todoResponses, dto.TodoResponse{Id: v.Id, Title: v.Title, Content: v.Content})
+	}
+
+	var todoResponse dto.TodosResponse
+	todoResponse.Todos = todoResponses
+
+	output, _ := json.MarshalIndent(todoResponse.Todos, "", "\t\t")
 	w.Header().Set("Content-type", "application/json")
-	todoResponse := dto.TodoResponse{Res: "GET"}
-	output, _ := json.MarshalIndent(todoResponse, "", "\t\t")
 	w.Write(output)
 }
 
