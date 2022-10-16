@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"errors"
 	"net/http"
 	"prac-go-mvc-rest/models/entities"
 )
@@ -48,5 +49,18 @@ func (mtrgex *MockTodoRepositoryGetExist) GetTodo() (todos []entities.TodoEntity
 }
 
 func (mtrgex *MockTodoRepositoryGetExist) InsertTodo(todos entities.TodoEntity) (id int, err error) {
+	return
+}
+
+type MockTodoRepositoryError struct {
+}
+
+func (mtrge *MockTodoRepositoryError) GetTodo() (todos []entities.TodoEntity, err error) {
+	err = errors.New("unexpected error occurred")
+	return
+}
+
+func (mtrie *MockTodoRepositoryError) InsertTodo(todo entities.TodoEntity) (id int, err error) {
+	err = errors.New("unexpected error occurred")
 	return
 }

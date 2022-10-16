@@ -53,3 +53,22 @@ func TestGetTodo_Exist(t *testing.T) {
 		t.Errorf("Response is %v", todosResponse)
 	}
 }
+
+func TestGetTodo_Error(t *testing.T) {
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("GET", "/", nil)
+
+	target := NewTodoController(&tests.MockTodoRepositoryError{})
+	target.GetTodo(w, r)
+
+	if w.Code != 500 {
+		t.Errorf("Response code is %v", w.Code)
+	}
+	if w.Header().Get("Content-Type") != "" {
+		t.Errorf("Content-Type is %v", w.Header().Get("Content-Type"))
+	}
+
+	if w.Body.Len() != 0 {
+		t.Errorf("body is %v", w.Body.Len())
+	}
+}
