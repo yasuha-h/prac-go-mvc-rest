@@ -9,3 +9,8 @@ type TodoResponse struct {
 type TodosResponse struct {
 	Todos []TodoResponse `json:"todos"`
 }
+
+type TodoRequest struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
