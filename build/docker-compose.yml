@@ -1,0 +1,28 @@
+version: '3'
+services:
+  app:
+    build: ./app/
+    container_name: go_prac_app
+    tty: true
+    volumes:
+      - ./../:/go/src/app/
+    ports:
+      - "8080:8000"
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    platform: 'linux/arm64/v8'
+    container_name: go_prac_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${GO_PRAC_ROOT_PASSWORD}
+      MYSQL_DATABASE: go_prac
+      MYSQL_USER: goprac
+      MYSQL_PASSWORD: ${GO_PRAC_PASSWORD}
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./db/data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - 3306:3306
