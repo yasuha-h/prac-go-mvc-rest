@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"prac-go-mvc-rest/controllers/dto"
 	"prac-go-mvc-rest/tests"
+	"strings"
 	"testing"
 )
 
@@ -70,5 +71,37 @@ func TestGetTodo_Error(t *testing.T) {
 
 	if w.Body.Len() != 0 {
 		t.Errorf("body is %v", w.Body.Len())
+	}
+}
+
+func TestPostTodo_Exist(t *testing.T) {
+	json := strings.NewReader(`{"title":"test-title","content":"test-content"}`)
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("POST", "/", json)
+
+	target := NewTodoController(&tests.MockTodoRepository{})
+	target.PostTodo(w, r)
+
+	if w.Code != 201 {
+		t.Errorf("Response code is %v", w.Code)
+	}
+	if w.Header().Get("Location") != r.Host+r.URL.Path+"2" {
+		t.Errorf("Location is %v", w.Header().Get("Location"))
+	}
+}
+
+func TestPostTodo_Error(t *testing.T) {
+	json := strings.NewReader(`{"title":"test-title","contents":"test-content"}`)
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("POST", "/", json)
+
+	target := NewTodoController(&tests.MockTodoRepositoryError{})
+	target.PostTodo(w, r)
+
+	if w.Code != 500 {
+		t.Errorf("Response code is %v", w.Code)
+	}
+	if w.Header().Get("Location") != "" {
+		t.Errorf("Location is %v", w.Header().Get("Location"))
 	}
 }
