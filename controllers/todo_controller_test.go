@@ -105,3 +105,16 @@ func TestPostTodo_Error(t *testing.T) {
 		t.Errorf("Location is %v", w.Header().Get("Location"))
 	}
 }
+
+func TestPutTodo_Exist(t *testing.T) {
+	json := strings.NewReader(`{"title":"test-title","contents":"test-content"}`)
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("PUT", "/2", json)
+
+	target := NewTodoController(&tests.MockTodoRepository{})
+	target.PutTodo(w, r)
+
+	if w.Code != 204 {
+		t.Errorf("Response code is %v", w.Code)
+	}
+}
