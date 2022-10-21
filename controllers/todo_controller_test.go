@@ -118,3 +118,29 @@ func TestPutTodo_Exist(t *testing.T) {
 		t.Errorf("Response code is %v", w.Code)
 	}
 }
+
+func TestPutTodo_invalidPath(t *testing.T) {
+	json := strings.NewReader(`{"title":"test-title","contents":"test-content"}`)
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("PUT", "/", json)
+
+	target := NewTodoController(&tests.MockTodoRepository{})
+	target.PutTodo(w, r)
+
+	if w.Code != 400 {
+		t.Errorf("Response code %v", w.Code)
+	}
+}
+
+func TestPutTodo_Error(t *testing.T) {
+	json := strings.NewReader(`{"title":"test-title","contents":"test-content"}`)
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("PUT", "/2", json)
+
+	target := NewTodoController(&tests.MockTodoRepositoryError{})
+	target.PutTodo(w, r)
+
+	if w.Code != 500 {
+		t.Errorf("Response code %v", w.Code)
+	}
+}
