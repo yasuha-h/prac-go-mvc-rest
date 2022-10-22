@@ -119,7 +119,7 @@ func TestPutTodo_Exist(t *testing.T) {
 	}
 }
 
-func TestPutTodo_invalidPath(t *testing.T) {
+func TestPutTodo_InvalidPath(t *testing.T) {
 	json := strings.NewReader(`{"title":"test-title","contents":"test-content"}`)
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest("PUT", "/", json)
@@ -142,5 +142,41 @@ func TestPutTodo_Error(t *testing.T) {
 
 	if w.Code != 500 {
 		t.Errorf("Response code %v", w.Code)
+	}
+}
+
+func TestDelete_Exist(t *testing.T) {
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("DELETE", "/2", nil)
+
+	target := NewTodoController(&tests.MockTodoRepository{})
+	target.DeleteTodo(w, r)
+
+	if w.Code != 204 {
+		t.Errorf("Response code is %v", w.Code)
+	}
+}
+
+func TestDelete_InvalidPath(t *testing.T) {
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("DELETE", "/", nil)
+
+	target := NewTodoController(&tests.MockTodoRepository{})
+	target.DeleteTodo(w, r)
+
+	if w.Code != 400 {
+		t.Errorf("Response code is %v", w.Code)
+	}
+}
+
+func TestDelete_Error(t *testing.T) {
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("DELETE", "/2", nil)
+
+	target := NewTodoController(&tests.MockTodoRepositoryError{})
+	target.DeleteTodo(w, r)
+
+	if w.Code != 500 {
+		t.Errorf("Response code is %v", w.Code)
 	}
 }

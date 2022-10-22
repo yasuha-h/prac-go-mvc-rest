@@ -9,6 +9,7 @@ type TodoRepository interface {
 	GetTodo() (todos []entities.TodoEntity, err error)
 	InsertTodo(todo entities.TodoEntity) (id int, err error)
 	UpdateTodo(todo entities.TodoEntity) (err error)
+	DeleteTodo(id int) (err error)
 }
 
 type todoRepository struct {
@@ -51,5 +52,10 @@ func (tr *todoRepository) InsertTodo(todo entities.TodoEntity) (id int, err erro
 
 func (tr *todoRepository) UpdateTodo(todo entities.TodoEntity) (err error) {
 	_, err = Db.Exec("UPDATE todo SET title = ?, content = ? WHERE id = ?", todo.Title, todo.Content, todo.Id)
+	return
+}
+
+func (tr *todoRepository) DeleteTodo(id int) (err error) {
+	_, err = Db.Exec("DELETE FROM todo WHERE id = ?", id)
 	return
 }

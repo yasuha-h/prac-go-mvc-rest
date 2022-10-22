@@ -42,6 +42,10 @@ func (mtr *MockTodoRepository) UpdateTodo(todo entities.TodoEntity) (err error) 
 	return
 }
 
+func (mtr *MockTodoRepository) DeleteTodo(id int) (err error) {
+	return
+}
+
 type MockTodoRepositoryGetExist struct {
 }
 
@@ -60,6 +64,10 @@ func (mtrgex *MockTodoRepositoryGetExist) UpdateTodo(todos entities.TodoEntity) 
 	return
 }
 
+func (mtrgex *MockTodoRepositoryGetExist) DeleteTodo(id int) (err error) {
+	return
+}
+
 type MockTodoRepositoryError struct {
 }
 
@@ -74,6 +82,11 @@ func (mtrie *MockTodoRepositoryError) InsertTodo(todo entities.TodoEntity) (id i
 }
 
 func (mtrie *MockTodoRepositoryError) UpdateTodo(todo entities.TodoEntity) (err error) {
+	err = errors.New("unexpected error occurred")
+	return
+}
+
+func (mtrie *MockTodoRepositoryError) DeleteTodo(id int) (err error) {
 	err = errors.New("unexpected error occurred")
 	return
 }

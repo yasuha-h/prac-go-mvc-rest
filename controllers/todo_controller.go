@@ -7,7 +7,6 @@ import (
 	"path"
 	"strconv"
 
-	"fmt"
 	"prac-go-mvc-rest/controllers/dto"
 	"prac-go-mvc-rest/models/entities"
 	"prac-go-mvc-rest/models/repositories"
@@ -90,5 +89,17 @@ func (tc *todoController) PutTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tc *todoController) DeleteTodo(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("delete")
+	todoId, err := strconv.Atoi(path.Base(r.URL.Path))
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	err = tc.tr.DeleteTodo(todoId)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.WriteHeader(204)
 }
