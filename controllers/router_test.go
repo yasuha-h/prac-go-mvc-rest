@@ -46,3 +46,37 @@ func TestPostTodo(t *testing.T) {
 		t.Errorf("Response code is %v", w.Code)
 	}
 }
+
+func TestPutTodo(t *testing.T) {
+	json := strings.NewReader(`{"title":"test-title","content":"test-content"}`)
+	r, _ := http.NewRequest("PUT", "/2", json)
+	w := httptest.NewRecorder()
+
+	mux.ServeHTTP(w, r)
+
+	if w.Code != 204 {
+		t.Errorf("Response code is %v", w.Code)
+	}
+}
+
+func TestDeleteTodo(t *testing.T) {
+	r, _ := http.NewRequest("DELETE", "/2", nil)
+	w := httptest.NewRecorder()
+
+	mux.ServeHTTP(w, r)
+
+	if w.Code != 204 {
+		t.Errorf("Response code is %v", w.Code)
+	}
+}
+
+func TestInvalidMethod(t *testing.T) {
+	r, _ := http.NewRequest("PATCH", "/todos/", nil)
+	w := httptest.NewRecorder()
+
+	mux.ServeHTTP(w, r)
+
+	if w.Code != 405 {
+		t.Errorf("Method Not Allowed, Response code is %v", w.Code)
+	}
+}
