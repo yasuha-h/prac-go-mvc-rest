@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"path"
 	"strconv"
 
-	"fmt"
 	"prac-go-mvc-rest/controllers/dto"
 	"prac-go-mvc-rest/models/entities"
 	"prac-go-mvc-rest/models/repositories"
@@ -67,9 +67,39 @@ func (tc *todoController) PostTodo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tc *todoController) PutTodo(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("put")
+	todoId, err := strconv.Atoi(path.Base(r.URL.Path))
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+	var todoRequest dto.TodoRequest
+	json.Unmarshal(body, &todoRequest)
+
+	todo := entities.TodoEntity{Id: todoId, Title: todoRequest.Title, Content: todoRequest.Content}
+	err = tc.tr.UpdateTodo(todo)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.WriteHeader(204)
 }
 
 func (tc *todoController) DeleteTodo(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("delete")
+	todoId, err := strconv.Atoi(path.Base(r.URL.Path))
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	err = tc.tr.DeleteTodo(todoId)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.WriteHeader(204)
 }
